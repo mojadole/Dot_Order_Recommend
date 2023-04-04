@@ -89,14 +89,18 @@ def menu_cat(menu_name, df):
 	remove_in_list(menu_list)
 
 	for key in menu_list:
+		if ("_" in key):
+				lst.append(key)
+				print(lst)
+
 		if key in menu_name:
 			if (len(key) == 1):
 				key = key + "_"
 				print(key)
 				return key
-			if ("_" in key):
-				lst.append(key)
-				print(lst)
+			else:
+				return key
+			
 	
 	return menu_cat
 
@@ -116,6 +120,7 @@ def recommend_menu_(df, menu_name, top=7):
 	last = len(df) - 1
 	df.loc[last, "음식명"] = menu_name
 	df.loc[last, "구분"] = menu_cat(menu_name, df)
+	print("!!!!!!!!!!!!!!!!")
 	print(menu_cat(menu_name, df))
 
 	sorted_idx = recommend_sim(df)
@@ -142,7 +147,7 @@ print(recommend_menu_(data, menu_name))
 """
 
 #"""
-menu_name = "겨자" ## 입력
+menu_name = "고등어구이정식" ## 입력
 
 lst = []
 
