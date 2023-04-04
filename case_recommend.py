@@ -8,7 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 df = pd.read_csv('food_list.csv',encoding='cp949')
 
 # 입력될 데이터 추가
-data_to_insert = {'구분': '_', '음식명': '_'}
+data_to_insert = {'구분': 'null', '음식명': 'null'}
 df = df.append(data_to_insert, ignore_index=True)
 
 # 필요한 데이터만 가져오기
@@ -120,8 +120,9 @@ def recommend_menu_(df, menu_name, top=7):
 	last = len(df) - 1
 	df.loc[last, "음식명"] = menu_name
 	df.loc[last, "구분"] = menu_cat(menu_name, df)
-	print("!!!!!!!!!!!!!!!!")
-	print(menu_cat(menu_name, df))
+
+	if (df.loc[last, "구분"] == "없는메뉴"):
+		return ([])
 
 	sorted_idx = recommend_sim(df)
 
@@ -147,7 +148,7 @@ print(recommend_menu_(data, menu_name))
 """
 
 #"""
-menu_name = "고등어구이정식" ## 입력
+menu_name = "라볶이" ## 입력
 
 lst = []
 
