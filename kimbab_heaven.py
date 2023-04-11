@@ -5,7 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 # 한글 깨짐없이 데이터 불러오기
-df = pd.read_csv('data/gimbab_heaven.csv')
+df = pd.read_csv('data/kimbab_heaven.csv')
 
 # 입력될 데이터 추가
 data_to_insert = {'구분1': 'null', '구분2': 'null', '음식명': 'null'}
