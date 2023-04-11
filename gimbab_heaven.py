@@ -5,22 +5,22 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 # 한글 깨짐없이 데이터 불러오기
-df = pd.read_csv('data/food_list.csv',encoding='cp949')
+df = pd.read_csv('data/gimbab_heaven.csv')
 
 # 입력될 데이터 추가
-data_to_insert = {'구분': 'null', '음식명': 'null'}
+data_to_insert = {'구분1': 'null', '구분2': 'null', '음식명': 'null'}
 df = df.append(data_to_insert, ignore_index=True)
 
 # 필요한 데이터만 가져오기
-data = df[['구분', '음식명']] 
+data = df[['구분1', '구분2', '음식명']] 
 
 # 한글자 오류 방지하기 위해 데이터처리
 for i in range (len(data)): # ,가 포함되거나 한 글자인 카테고리명 변경 / 문자가 있거나 한 글자인 음식명 변경
-	if (',' in data['구분'][i]):
-		data.loc[i, "구분"] = data['구분'][i].replace(',', '_')
+	if (',' in data['구분2'][i]):
+		data.loc[i, "구분2"] = data['구분2'][i].replace(',', '_')
 
-	if (len(data['구분'][i]) == 1):
-		data.loc[i, "구분"] = data['구분'][i] + "_"
+	if (len(data['구분2'][i]) == 1):
+		data.loc[i, "구분2"] = data['구분2'][i] + "_"
 
 	if (len(data['음식명'][i]) == 1):
 		data.loc[i, "음식명"] = data['음식명'][i] + "_"
@@ -33,11 +33,11 @@ for i in range (len(data)): # ,가 포함되거나 한 글자인 카테고리명
 
 # 카테고리 벡터화
 cv = CountVectorizer(ngram_range=(1,2)) 
-cv_category = cv.fit_transform(data['구분']) 
+cv_category = cv.fit_transform(data['구분2']) 
 
 def recommend_sim_cat(data):
 	# 구분 벡터화
-	cv_category = cv.fit_transform(data['구분']) 
+	cv_category = cv.fit_transform(data['구분2']) 
 	# print(cv.vocabulary_) # 카테고리별 인덱스 번호 
 
 	# 코사인 유사도:구분
@@ -105,7 +105,7 @@ def menu_cat(menu_name, df):
 	return menu_cat
 
 # 추천 함수 (수정 중)
-def recommend_menu_(df, menu_name, top=7):
+def recommend_menu(df, menu_name, top=5):
 
 	lst = []
 
@@ -119,18 +119,16 @@ def recommend_menu_(df, menu_name, top=7):
 
 	last = len(df) - 1
 	df.loc[last, "음식명"] = menu_name
-	df.loc[last, "구분"] = menu_cat(menu_name, df)
+	df.loc[last, "구분2"] = menu_cat(menu_name, df)
 
-	if (df.loc[last, "구분"] == "없는메뉴"):
+	if (df.loc[last, "구분2"] == "없는메뉴"):
 		return ([])
-
+	
 	sorted_idx = recommend_sim(df)
 
-	
-	#print(sorted_idx)
-
-	sim_idx = sorted_idx[[last], :top].reshape(-1)
-	#print(sim_idx)
+	target_menu = df[df['음식명'] == menu_name].index.values
+	sim_idx = sorted_idx[target_menu, :(top + 1)].reshape(-1)
+	sim_idx = sim_idx[sim_idx != target_menu]
 
 	result = df.iloc[sim_idx]
 	return result['음식명'].values ## 추천 메뉴 전송 필요
@@ -149,10 +147,7 @@ print(recommend_menu_(data, menu_name))
 
 #"""
 
-# 골뱅이 돼지
-# 고등어구이
-
-menu_name = "돼지" ## 입력
+menu_name = "밥" ## 입력
 
 lst = []
 
@@ -164,7 +159,7 @@ if (True in (data['음식명'] == menu_name).values): # 입력과 일치하는 �
 		lst.append(menu_name)
 		
 else : # 입력과 일치하는 메뉴명이 없는 경우
-	lst = recommend_menu_(data, menu_name)
+	lst = recommend_menu(data, menu_name)
 	if (len(lst) != 0):
 		print("일치하는 메뉴가 없습니다. 추천 메뉴는 다음과 같습니다.")
 
