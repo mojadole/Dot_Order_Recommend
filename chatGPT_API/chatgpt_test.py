@@ -1,9 +1,8 @@
 import openai
 
-API_KEY = #''
+API_KEY = 'sk-' ## 키
 
 def callChatGPT(prompt, API_KEY=API_KEY):
-    
     messages = []
 
     #get api key
@@ -20,5 +19,12 @@ def callChatGPT(prompt, API_KEY=API_KEY):
 
     return messages[1]["content"]
 
-prompt = input("Inser a prompt: ")
-print(callChatGPT(prompt))
+menu = "라면"
+
+print(callChatGPT(menu + " 영어 한줄 설명"))
+print()
+
+res = callChatGPT(menu + " 는 [밥], [국], [면], [분식] 중에 뭐야")
+
+res = res[res.find('[')+1:res.find(']')]
+print(res)
