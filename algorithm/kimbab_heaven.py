@@ -147,7 +147,7 @@ print(recommend_menu_(data, menu_name))
 
 #"""
 
-menu_name = "밥" ## 입력
+menu_name = "김치라면" ## 입력
 
 lst = []
 
